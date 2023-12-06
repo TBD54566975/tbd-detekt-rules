@@ -11,12 +11,12 @@ import org.jetbrains.kotlin.psi.KtNamedFunction
 import org.jetbrains.kotlin.psi.KtParameter
 
 class JvmOverloadsAnnotationRule(config: Config) : Rule(config) {
-    override val issue = Issue(
-        javaClass.simpleName,
-        Severity.Warning,
-        "This rule reports functions that have default parameters but are not annotated with @JvmOverloads.",
-        Debt.FIVE_MINS,
-    )
+  override val issue = Issue(
+    javaClass.simpleName,
+    Severity.Warning,
+    "This rule reports functions that have default parameters but are not annotated with @JvmOverloads.",
+    Debt.FIVE_MINS,
+  )
 
   override fun visitNamedFunction(function: KtNamedFunction) {
     super.visitNamedFunction(function)
@@ -36,6 +36,13 @@ class JvmOverloadsAnnotationRule(config: Config) : Rule(config) {
     this.valueParameters.any(KtParameter::hasDefaultValue)
 
   private fun KtNamedFunction.hasJvmOverloadsAnnotation(): Boolean =
-    this.annotationEntries.any { it.text == "@JvmOverloads" }
+    this.annotationEntries.any {
+      it.text.contains("JvmOverloads")
+    }
+}
 
+class A {
+  @kotlin.jvm.JvmOverloads
+  fun foo(a: Int = 1) {
+  }
 }

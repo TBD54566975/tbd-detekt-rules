@@ -24,7 +24,7 @@ internal class JvmOverloadsAnnotationRuleTest(private val env: KotlinCoreEnviron
     }
 
     @Test
-    fun `doesn't report annotated methods`() {
+    fun `doesn't report methods annotated with @JvmOverloads`() {
         val code = """
         class A {
           @JvmOverloads
@@ -36,4 +36,18 @@ internal class JvmOverloadsAnnotationRuleTest(private val env: KotlinCoreEnviron
         val findings = JvmOverloadsAnnotationRule(Config.empty).compileAndLintWithContext(env, code)
         findings shouldHaveSize 0
     }
+
+  @Test
+  fun `doesn't report methods annotated with fully qualified @kotlinJvmJvmOverloads`() {
+    val code = """
+      class A {
+        @kotlin.jvm.JvmOverloads
+        fun foo(a: Int = 1) {
+
+        }
+      }
+    """
+    val findings = JvmOverloadsAnnotationRule(Config.empty).compileAndLintWithContext(env, code)
+    findings shouldHaveSize 0
+  }
 }
