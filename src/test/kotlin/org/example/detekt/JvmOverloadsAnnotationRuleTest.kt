@@ -8,16 +8,18 @@ import org.jetbrains.kotlin.cli.jvm.compiler.KotlinCoreEnvironment
 import org.junit.jupiter.api.Test
 
 @KotlinCoreEnvironmentTest
-internal class MyRuleTest(private val env: KotlinCoreEnvironment) {
+internal class JvmOverloadsAnnotationRuleTest(private val env: KotlinCoreEnvironment) {
 
     @Test
-    fun `reports inner classes`() {
+    fun `reports methods without @JvmOverloads annotation`() {
         val code = """
         class A {
-          inner class B
+          fun foo(a: Int = 1) {
+          
+          }
         }
         """
-        val findings = MyRule(Config.empty).compileAndLintWithContext(env, code)
+        val findings = JvmOverloadsAnnotationRule(Config.empty).compileAndLintWithContext(env, code)
         findings shouldHaveSize 1
     }
 
@@ -25,10 +27,13 @@ internal class MyRuleTest(private val env: KotlinCoreEnvironment) {
     fun `doesn't report inner classes`() {
         val code = """
         class A {
-          class B
+          @JvmOverloads
+          fun foo(a: Int = 1) {
+          
+          }
         }
         """
-        val findings = MyRule(Config.empty).compileAndLintWithContext(env, code)
+        val findings = JvmOverloadsAnnotationRule(Config.empty).compileAndLintWithContext(env, code)
         findings shouldHaveSize 0
     }
 }

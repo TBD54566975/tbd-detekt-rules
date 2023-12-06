@@ -4,14 +4,14 @@ import io.gitlab.arturbosch.detekt.api.Config
 import io.gitlab.arturbosch.detekt.api.RuleSet
 import io.gitlab.arturbosch.detekt.api.RuleSetProvider
 
-class MyRuleSetProvider : RuleSetProvider {
-    override val ruleSetId: String = "MyRuleSet"
+class TbdRulesetProvider : RuleSetProvider {
+    override val ruleSetId: String = "TbdRulesetProvider"
 
     override fun instance(config: Config): RuleSet {
         return RuleSet(
             ruleSetId,
             listOf(
-                MyRule(config),
+                JvmOverloadsAnnotationRule(config),
             ),
         )
     }
