@@ -7,8 +7,10 @@ import io.gitlab.arturbosch.detekt.api.Entity
 import io.gitlab.arturbosch.detekt.api.Issue
 import io.gitlab.arturbosch.detekt.api.Rule
 import io.gitlab.arturbosch.detekt.api.Severity
+import org.jetbrains.kotlin.name.FqName
 import org.jetbrains.kotlin.psi.KtNamedFunction
 import org.jetbrains.kotlin.psi.KtParameter
+import org.jetbrains.kotlin.psi.KtUserType
 
 class JvmOverloadsAnnotationRule(config: Config) : Rule(config) {
   override val issue = Issue(
@@ -35,8 +37,12 @@ class JvmOverloadsAnnotationRule(config: Config) : Rule(config) {
   private fun KtNamedFunction.hasDefaultParameters(): Boolean =
     this.valueParameters.any(KtParameter::hasDefaultValue)
 
-  private fun KtNamedFunction.hasJvmOverloadsAnnotation(): Boolean =
-    this.annotationEntries.any {
-      it.text.contains("JvmOverloads")
+  private fun KtNamedFunction.hasJvmOverloadsAnnotation(): Boolean {
+    return this.annotationEntries.any { annotationEntry ->
+      val typeReference = annotationEntry.typeReference
+      val typeElement = typeReference?.typeElement
+      (typeElement as? KtUserType)?.referencedName == "JvmOverloads"
     }
+  }
+
 }
