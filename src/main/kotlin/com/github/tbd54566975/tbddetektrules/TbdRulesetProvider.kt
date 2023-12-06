@@ -5,7 +5,7 @@ import io.gitlab.arturbosch.detekt.api.RuleSet
 import io.gitlab.arturbosch.detekt.api.RuleSetProvider
 
 class TbdRulesetProvider : RuleSetProvider {
-    override val ruleSetId: String = "TbdRulesetProvider"
+    override val ruleSetId: String = "TbdRuleset"
 
     override fun instance(config: Config): RuleSet {
         return RuleSet(
