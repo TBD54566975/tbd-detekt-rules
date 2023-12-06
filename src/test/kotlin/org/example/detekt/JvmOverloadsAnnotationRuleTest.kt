@@ -24,7 +24,7 @@ internal class JvmOverloadsAnnotationRuleTest(private val env: KotlinCoreEnviron
     }
 
     @Test
-    fun `doesn't report inner classes`() {
+    fun `doesn't report annotated methods`() {
         val code = """
         class A {
           @JvmOverloads
