@@ -3,7 +3,7 @@ plugins {
     `maven-publish`
 }
 
-group = "org.example.detekt"
+group = "com.github.tbd54566975.tbddetektrules"
 version = "1.0-SNAPSHOT"
 
 dependencies {
