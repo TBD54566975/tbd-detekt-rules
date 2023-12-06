@@ -1,4 +1,4 @@
-package org.example.detekt
+package com.github.tbd54566975.tbddetektrules
 
 import io.gitlab.arturbosch.detekt.api.CodeSmell
 import io.gitlab.arturbosch.detekt.api.Config
@@ -39,10 +39,4 @@ class JvmOverloadsAnnotationRule(config: Config) : Rule(config) {
     this.annotationEntries.any {
       it.text.contains("JvmOverloads")
     }
-}
-
-class A {
-  @kotlin.jvm.JvmOverloads
-  fun foo(a: Int = 1) {
-  }
 }
