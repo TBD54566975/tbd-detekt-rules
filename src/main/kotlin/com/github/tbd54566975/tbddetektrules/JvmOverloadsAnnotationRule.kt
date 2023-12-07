@@ -7,10 +7,12 @@ import io.gitlab.arturbosch.detekt.api.Entity
 import io.gitlab.arturbosch.detekt.api.Issue
 import io.gitlab.arturbosch.detekt.api.Rule
 import io.gitlab.arturbosch.detekt.api.Severity
-import org.jetbrains.kotlin.name.FqName
+import io.gitlab.arturbosch.detekt.rules.isAbstract
+import org.jetbrains.kotlin.psi.KtClass
 import org.jetbrains.kotlin.psi.KtNamedFunction
 import org.jetbrains.kotlin.psi.KtParameter
 import org.jetbrains.kotlin.psi.KtUserType
+import org.jetbrains.kotlin.psi.psiUtil.getParentOfType
 
 class JvmOverloadsAnnotationRule(config: Config) : Rule(config) {
   override val issue = Issue(
@@ -23,7 +25,15 @@ class JvmOverloadsAnnotationRule(config: Config) : Rule(config) {
   override fun visitNamedFunction(function: KtNamedFunction) {
     super.visitNamedFunction(function)
 
-    if (function.hasDefaultParameters() && !function.hasJvmOverloadsAnnotation()) {
+    val isValidContext = function.isMemberOfAClassOrObject() || function.isTopLevel()
+    val isAbstractMethod = function.isAbstract()
+
+    if (
+      isValidContext &&
+      !isAbstractMethod &&
+      function.hasDefaultParameters() &&
+      !function.hasJvmOverloadsAnnotation()
+    ) {
       report(
         CodeSmell(
           issue,
@@ -45,4 +55,8 @@ class JvmOverloadsAnnotationRule(config: Config) : Rule(config) {
     }
   }
 
+  private fun KtNamedFunction.isMemberOfAClassOrObject(): Boolean {
+    val parentClass = this.getParentOfType<KtClass>(true)
+    return parentClass != null && !parentClass.isInterface()
+  }
 }

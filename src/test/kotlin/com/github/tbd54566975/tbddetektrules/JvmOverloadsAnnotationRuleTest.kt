@@ -39,8 +39,7 @@ internal class JvmOverloadsAnnotationRuleTest(private val env: KotlinCoreEnviron
 
     @Test
     fun `doesn't report methods annotated with @JvmOverloads`() {
-        val code = """import org.jetbrains.kotlin.com.intellij.psi.JvmCommon
-
+        val code = """
         class A {
           @JvmOverloads
           fun foo(a: Int = 1) {
@@ -52,14 +51,51 @@ internal class JvmOverloadsAnnotationRuleTest(private val env: KotlinCoreEnviron
         findings shouldHaveSize 0
     }
 
-
-
   @Test
   fun `doesn't report methods annotated with fully qualified @kotlinJvmJvmOverloads`() {
     val code = """
       class A {
         @kotlin.jvm.JvmOverloads
         fun foo(a: Int = 1) {
+
+        }
+      }
+    """
+    val findings = JvmOverloadsAnnotationRule(Config.empty).compileAndLintWithContext(env, code)
+    findings shouldHaveSize 0
+  }
+
+  @Test
+  fun `doesn't report methods inside an interface`() {
+    val code = """
+      interface A {
+        fun foo(a: Int = 1) {
+
+        }
+      }
+    """
+    val findings = JvmOverloadsAnnotationRule(Config.empty).compileAndLintWithContext(env, code)
+    findings shouldHaveSize 0
+  }
+
+  @Test
+  fun `doesn't report on abstract methods inside a concrete class`() {
+    val code = """
+      class A {
+        abstract fun foo(a: Int = 1) {
+
+        }
+      }
+    """
+    val findings = JvmOverloadsAnnotationRule(Config.empty).compileAndLintWithContext(env, code)
+    findings shouldHaveSize 0
+  }
+
+  @Test
+  fun `doesn't report on abstract methods inside an abstract class`() {
+    val code = """
+      abstract class A {
+        abstract fun foo(a: Int = 1) {
 
         }
       }
