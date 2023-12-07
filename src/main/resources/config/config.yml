@@ -1,3 +1,3 @@
-MyRuleSet:
-  MyRule:
-    active: false
+TbdRuleset:
+  JvmOverloadsAnnotationRule:
+    active: true
